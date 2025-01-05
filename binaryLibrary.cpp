@@ -5,6 +5,7 @@
 #include <sstream>
 using namespace std;
 
+
 const string PASSWORD = "admin00";
 
 struct Library{
@@ -19,6 +20,9 @@ struct Library{
 vector<Library> csvData(const string &bookslist);
 void showBooks(const vector<Library> &books);
 bool adminAccess(string &password);
+void addBook(vector<Library> &books);
+void editBook(vector<Library> &books);
+void deleteBook(vector<Library> &books);
 
 int main(){
     string filename = "bookslist.csv", password;
@@ -176,3 +180,33 @@ bool adminAccess(string &password){
     }
     return true;
 }
+
+void addBook(vector<Library> &books){
+    Library newBook;
+
+    cout<<"Enter the coide of the book: ";
+    cin>>newBook.code;
+
+    cout<<"Enter the title of the book: ";
+    cin.ignore();
+    getline(cin, newBook.title);
+
+    cout<<"Enter the author of the book: ";
+    cin.ignore();
+    getline(cin, newBook.author);
+
+    cout<<"Enter the genre of the book: ";
+    cin.ignore();
+    getline(cin, newBook.genre);
+
+    cout<<"Enter the publication year of the book: ";
+    cin >> newBook.publicationYear;
+
+    books.push_back(newBook);
+    cout<<"Book added successfully!"<<endl;
+
+}
+
+
+void editBook(vector<Library> &books);
+void deleteBook(vector<Library> &books);
