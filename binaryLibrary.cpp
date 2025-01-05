@@ -101,13 +101,13 @@ int main(){
                     //funcion Pedro
                     break;
                 case 3:
-                    //funcion Valeria
+                    addBook(books);
                     break;
                 case 4:
-                    //funcion Valeria
+                    editBook(books);
                     break;
                 case 5:
-                    //funcion Valeria
+                    deleteBook(books);
                     break;
                 case 6:
                     //funcion Pedro
@@ -208,5 +208,59 @@ void addBook(vector<Library> &books){
 }
 
 
-void editBook(vector<Library> &books);
-void deleteBook(vector<Library> &books);
+void editBook(vector<Library> &books){
+    string code;
+    bool found = false;
+
+    cout<<"Enter the code of the book you want to edit: ";
+    cin>>code;
+
+    for(int i=0; i<books.size(); i++){
+        if(books[i].code == code){
+            cout<<"Editing book: "<<books[i].title<<endl;
+            cout<<"Enter the new title: ";
+            cin.ignore();
+            getline(cin, books[i].title);
+
+            cout<<"Enter the new author (current: "<<books[i].author<<"): ";
+            getline(cin, books[i].author);
+            
+            cout<<"Enter the new genre (current: "<<books[i].genre<<"): ";
+            getline(cin, books[i].genre);
+
+            cout<<"Enter the new publication year (current: "<<books[i].publicationYear<<"): ";
+            cin>>books[i].publicationYear;
+
+            found = true;
+            break;
+        }
+    }
+
+    if(!found){
+        cout<<"Book with code "<<code<<" not found"<<endl;
+    }
+}
+
+
+
+void deleteBook(vector<Library> &books){
+
+    string code;
+    bool found = false;
+
+    cout<<"Enter the code of the book you want to delete: ";
+    cin>>code;
+
+    for(int i=0; i<books.size();i++){
+        if(books[i].code == code){
+            books.erase(books.begin()+i);
+            cout<<"¡Book deleted successfully!"<<endl;
+            found = true;
+            break;
+        }
+    }
+
+    if(!found){
+        cout<<"Book with code "<<code<<" not found"<<endl;
+    }
+}
