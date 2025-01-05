@@ -188,6 +188,15 @@ void addBook(vector<Library> &books){
     cin>>newBook.code;
     cin.ignore();
 
+    //validar si el codigo existe ya
+
+    for(const auto &book : books){
+        if(newBook.code == book.code){
+            cout<<"The code already exists"<<endl;
+            return;
+        }
+    }
+    
     cout<<"Enter the title of the book: ";
     getline(cin, newBook.title);
 
