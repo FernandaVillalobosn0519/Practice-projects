@@ -250,24 +250,34 @@ void editBook(vector<Library> &books){
 
 
 
-void deleteBook(vector<Library> &books){
-
+void deleteBook(vector<Library> &books) {
     string code;
     bool found = false;
 
-    cout<<"Enter the code of the book you want to delete: ";
-    cin>>code;
+    cout << "Enter the code of the book you want to delete: ";
+    cin >> code;
 
-    for(int i=0; i<books.size();i++){
-        if(books[i].code == code){
-            books.erase(books.begin()+i);
-            cout<<"¡Book deleted successfully!"<<endl;
+    for (int i = 0; i < books.size(); i++) {
+        if (books[i].code == code) {  
             found = true;
-            break;
+
+            string answer;
+            cout << "Are you sure you want to delete the book with code " << code << "? (y/n): ";
+            cin >> answer;
+
+            if (answer == "y") {  // delete
+                books.erase(books.begin() + i);  
+                cout << "Book deleted successfully!" << endl;
+            } else if (answer == "n") { //no delete
+                cout << "Returning..." << endl;
+            } else {  
+                cout << "Invalid option. Returning..." << endl;
+            }
+            return;  
         }
     }
 
-    if(!found){
-        cout<<"Book with code "<<code<<" not found"<<endl;
+    if (!found) {
+        cout << "Book with code " << code << " not found." << endl;
     }
 }
