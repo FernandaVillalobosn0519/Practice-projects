@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 using namespace std;
 
 
@@ -69,6 +70,7 @@ int main(){
                 case 3:
                     cout << "Returning..." << endl;
                     back = false;
+                    system("cls");
                     break;
                 default:
                     cout << "Only options from 1 to 3 are accepted" << endl;
@@ -115,6 +117,7 @@ int main(){
                 case 7:
                     cout << "Returning..." << endl;
                     back = false;
+                    system("cls");
                     break;
                 default:
                     cout << "Only options from 1 to 3 are accepted" << endl;
