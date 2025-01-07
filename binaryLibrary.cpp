@@ -258,7 +258,7 @@ void deleteBook(vector<Library> &books) {
     cin >> code;
 
     for (int i = 0; i < books.size(); i++) {
-        if (books[i].code == code) {  
+        if (books[i].code == code) { 
             found = true;
 
             string answer;
