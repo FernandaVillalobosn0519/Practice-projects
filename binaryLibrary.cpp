@@ -23,11 +23,17 @@ bool adminAccess(string &password);
 void addBook(vector<Library> &books);
 void editBook(vector<Library> &books);
 void deleteBook(vector<Library> &books);
+void exportBooksByGenre(const vector<Library>& books, const string& genre);
+void binarySearch(const vector<Library>& books, const string& code);
+void quicksort(vector<Library>& books, int low, int high);
+
 
 int main(){
     string filename = "bookslist.csv", password;
     vector<Library> books = csvData(filename);
-
+    quicksort(books, 0, books.size() - 1);
+    string value;
+    string genre;
     int option;
 
     do{
@@ -49,7 +55,7 @@ int main(){
             bool back = true;
             
             while(back){
-                cout << "\nUsers menu\n1. Show all books\n2. Search book by its code\n3. Return\nChoose an option: " << endl;
+                cout << "\nUsers menu\n1. Show all books\n2. Search book\n3. Return\nChoose an option: " << endl;
                 cin >> optionUsers;
                 cin.ignore();
 
@@ -64,8 +70,10 @@ int main(){
                     showBooks(books);
                     break;
                 case 2:
-                    //funcion Pedro
-                    break;
+                    cout << "Enter the book to search: ";
+                    cin >> value;
+                    binarySearch(books, value);
+                    break;    
                 case 3:
                     cout << "Returning..." << endl;
                     back = false;
@@ -83,7 +91,7 @@ int main(){
             bool back = true;
             
             while(back){
-                cout << "\nAdmin menu\n1. Show all books\n2. Search book by its code\n3. Add books\n4. Edit information\n5. Delete information\n6. Export books\n7. Return \nChoose an option: " << endl;
+                cout << "\nAdmin menu\n1. Show all books\n2. Search book\n3. Add books\n4. Edit information\n5. Delete information\n6. Export books\n7. Return \nChoose an option: " << endl;
                 cin >> optionAdmin;
                 cin.ignore();
 
@@ -98,7 +106,10 @@ int main(){
                     showBooks(books);
                     break;
                 case 2:
-                    //funcion Pedro
+                    cout << "Enter the book to search: ";
+                    cin >> value;
+                    binarySearch(books, value);
+                    break; 
                     break;
                 case 3:
                     addBook(books);
@@ -110,7 +121,9 @@ int main(){
                     deleteBook(books);
                     break;
                 case 6:
-                    //funcion Pedro
+                    cout << "Enter the genre to export: ";
+                    cin >> genre; 
+                    exportBooksByGenre(books, genre);
                     break;    
                 case 7:
                     cout << "Returning..." << endl;
@@ -218,11 +231,11 @@ void addBook(vector<Library> &books){
 void editBook(vector<Library> &books){
     string code;
     bool found = false;
-
+    int size = books.size();
     cout<<"Enter the code of the book you want to edit: ";
     cin>>code;
 
-    for(int i=0; i<books.size(); i++){
+    for(int i=0; i<size; i++){
         if(books[i].code == code){
             cout<<"Editing book: "<<books[i].title<<endl;
             cout<<"Enter the new title: ";
@@ -253,11 +266,11 @@ void editBook(vector<Library> &books){
 void deleteBook(vector<Library> &books) {
     string code;
     bool found = false;
-
+    int size = books.size();
     cout << "Enter the code of the book you want to delete: ";
     cin >> code;
 
-    for (int i = 0; i < books.size(); i++) {
+    for (int i = 0; i < size; i++) {
         if (books[i].code == code) {  
             found = true;
 
@@ -281,3 +294,78 @@ void deleteBook(vector<Library> &books) {
         cout << "Book with code " << code << " not found." << endl;
     }
 }
+void quicksort(vector<Library>& books, int low, int high) {
+    if (low < high) {
+        string pivot = books[high].code;
+        int i = low - 1;
+        for (int j = low; j < high; ++j) {
+            if (books[j].code <= pivot) {
+                ++i;
+                swap(books[i], books[j]);
+            }
+        }
+        swap(books[i + 1], books[high]);
+        int pivotIndex = i + 1;
+
+        quicksort(books, low, pivotIndex - 1);
+        quicksort(books, pivotIndex + 1, high);
+    }
+}
+
+void binarySearch(const vector<Library>& books, const string& code) {
+    int low = 0;
+    int high = books.size() - 1;
+    bool found = false;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (books[mid].code == code) {
+            cout << "Book found:\n";
+            cout << "Code: " << books[mid].code << "\n";
+            cout << "Title: " << books[mid].title << "\n";
+            cout << "Author: " << books[mid].author << "\n";
+            cout << "Genre: " << books[mid].genre << "\n";
+            cout << "Publication Year: " << books[mid].publicationYear << "\n";
+            found = true;
+            break;
+        } else if (books[mid].code < code) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    if (!found) {
+        cout << "Book with code " << code << " not found.\n";
+    }
+}
+
+void exportBooksByGenre(const vector<Library>& books, const string& genre) {
+    static int fileCount = 1; 
+    bool found = false;
+
+    for (const auto& book : books) {
+        if (book.genre == genre) {
+            stringstream filename;
+            filename << "exported-file-" << fileCount++ << ".csv";
+
+            ofstream file(filename.str());
+
+            if (file.is_open()) {
+                file << "Code,Title,Author,Genre,PublicationYear\n";
+                file << book.code << "," << book.title << "," << book.author << ","
+                     << book.genre << "," << book.publicationYear << "\n";
+                file.close();
+                cout << "Book exported successfully to " << filename.str() << "!\n";
+            } else {
+                cout << "Error opening file " << filename.str() << " for writing.\n";
+            }
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No books found with genre " << genre << ".\n";
+    }
+}
+
+
