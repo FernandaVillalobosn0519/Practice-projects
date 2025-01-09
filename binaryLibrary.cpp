@@ -268,35 +268,34 @@ void editBook(vector<Library> &books){
 
 void deleteBook(vector<Library> &books) {
     string code;
-    bool found = false;
-    int size = books.size();
     cout << "Enter the code of the book you want to delete: ";
     cin >> code;
 
-    for (int i = 0; i < books.size(); i++) {
-        if (books[i].code == code) {  
-            found = true;
-
+    for (auto it = books.begin(); it != books.end(); ) {
+        if (it->code == code) { // Accede al código del libro a través del iterador
             string answer;
             cout << "Are you sure you want to delete the book with code " << code << "? (y/n): ";
             cin >> answer;
 
-            if (answer == "y") {  // delete
-                books.erase(books.begin() + i);  
-                cout << "Book deleted successfully!" << endl;
-            } else if (answer == "n") { //no delete
+            if (answer == "y" || answer == "Y") {
+                it = books.erase(it);
+                cout << "Book deleted successfully!"<<endl;
+            } else if(answer == "n" || answer == "N"){
                 cout << "Returning..." << endl;
-            } else {  
+                ++it;
+            }else{
                 cout << "Invalid option. Returning..." << endl;
+                ++it;
             }
-            return;  
+            return;
+        } else {
+            ++it;
         }
     }
-
-    if (!found) {
-        cout << "Book with code " << code << " not found." << endl;
-    }
+        cout << "Book with code " << code << " not found."<<endl;
 }
+
+
 void quicksort(vector<Library>& books, int low, int high) {
     if (low < high) {
         string pivot = books[high].code;
