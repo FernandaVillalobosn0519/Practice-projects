@@ -195,6 +195,8 @@ int main(){
         cout<<"2. Black"<<endl;
         cout << "\nChoose your option: ";
         cin>>option;
+        cin.ignore();
+        validateInput();
             switch (option)
             {
             case 1:
@@ -419,8 +421,7 @@ void binarySearch(vector<Library>& books, const string& criterion, const string&
 void exportBooks(vector<Library>& books, const string& criterion, const string& value) {
     if (criterion != "all") {
     sortBooks(books, criterion);
-}
-
+    }
 
     static int fileCount = 1;
     stringstream filename;
@@ -436,13 +437,13 @@ void exportBooks(vector<Library>& books, const string& criterion, const string& 
     file << "Code,Title,Author,Genre,PublicationYear\n";
     bool found = false;
 
-   if (criterion == "all") {
-    for (const auto& book : books) {
-        file << book.code << "," << book.title << "," << book.author << ","
-             << book.genre << "," << book.publicationYear << "\n";
-        found = true;
-    }
-} else {
+    if (criterion == "all") {
+        for (const auto& book : books) {
+            file << book.code << "," << book.title << "," << book.author << ","
+                << book.genre << "," << book.publicationYear << "\n";
+            found = true;
+        }
+    } else {
     auto it = lower_bound(books.begin(), books.end(), value, [criterion](const Library& book, const string& value) {
         if (criterion == "genre") return book.genre < value;
         if (criterion == "author") return book.author < value;
@@ -456,9 +457,7 @@ void exportBooks(vector<Library>& books, const string& criterion, const string& 
         found = true;
         ++it;
     }
-}
-
-
+    }
     file.close();
 
     if (found) {
