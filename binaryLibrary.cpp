@@ -8,8 +8,17 @@
 #include <chrono>
 #include <thread>
 #include <iomanip>
+#include <windows.h>
 using namespace std;
 const string PASSWORD = "admin00";
+const string TITLE = 
+"__________._____.   .__  .__        __                          _______                             .___       \n"
+"\\______   \\__\\_ |__ |  | |__| _____/  |_  ____   ____ _____     \\      \\   ____   _____ _____     __| _/____   \n"
+" |    |  _/  || __ \\|  | |  |/  _ \\   __\\/ __ \\_/ ___\\\\__  \\    /   |   \\ /  _ \\ /     \\\\__  \\   / __ |\\__  \\  \n"
+" |    |   \\  || \\_\\ \\  |_|  (  <_> )  | \\  ___/\\  \\___ / __ \\_ /    |    (  <_> )  Y Y  \\/ __ \\_/ /_/ | / __ \\_\n"
+" |______  /__||___  /____/__|\\____/|__|  \\___  >\\___  >____  / \\____|__  /\\____/|__|_|  (____  /\\____ |(____  /\n"
+"        \\/        \\/                         \\/     \\/     \\/          \\/             \\/     \\/      \\/     \\/ \n";
+
 
 struct Library{
     string code;
@@ -30,6 +39,7 @@ void exportBooks(vector<Library>& books, const string& criterion, const string& 
 void binarySearch(vector<Library>& books, const string& criterion, const string& value);
 void sortBooks(vector<Library>& books, const string& criterion);
 void validateInput();
+void setColor(int textColor, int bgColor);
 
 int main(){
     string filename ="bookslist.csv", password;
@@ -38,8 +48,9 @@ int main(){
     int option, exportOption, optionAdmin, optionUsers, searchOption;
 
     do{
+        cout << TITLE << endl;
         cout << "\n**************Welcome to your library***************" << endl;
-        cout << "\n1. Login as a user\n2. Login as an admin\n3. Exit" << endl;
+        cout << "\n1. Login as a user\n2. Login as an admin\n3.themas\n4.exit" << endl;
         cout << "\nChoose your option: ";
         cin >> option;
         cin.ignore();
@@ -57,6 +68,7 @@ int main(){
                 validateInput();
                 switch (optionUsers){
                 case 1:
+                    system("cls");
                     showBooks(books);break;
                 case 2: {
                     bool searchBack = true;
@@ -176,14 +188,38 @@ int main(){
             }
         }
         break;
+
         case 3:
+        cout<<"Choose a theme"<<endl;
+        cout<<"1. White"<<endl;
+        cout<<"2. Black"<<endl;
+        cout << "\nChoose your option: ";
+        cin>>option;
+            switch (option)
+            {
+            case 1:
+            cout<<"theme white"<<endl;
+                setColor(3,15);
+                system("cls");
+                
+                break;
+            case 2:
+            cout<<"theme black"<<endl;
+                setColor(15,0);
+                system("cls");
+                break;
+            default:
+                break;
+            }
+            break;
+                case 4:
             cout << "Goodbye and thanks for reading books :)" << endl;
             break;
         default:
-            cout << "Only options from 1 - 3 are accepted" << endl;
+            cout << "Only options from 1 - 4 are accepted" << endl;
             break;
         }
-    } while (option != 3);
+    } while (option != 4);
 
 return 0;
 }
@@ -221,6 +257,7 @@ void showBooks(const vector<Library> &books){
              << setw(85) << book.title
              << endl;
     }
+
 }
 
 bool adminAccess(string &password){
@@ -438,3 +475,11 @@ void validateInput(){
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 }
+#include <windows.h>
+
+void setColor(int textColor, int bgColor) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int color = (bgColor << 4) | textColor;
+    SetConsoleTextAttribute(hConsole, color);
+}
+
