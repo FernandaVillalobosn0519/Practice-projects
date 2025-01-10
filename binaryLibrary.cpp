@@ -475,7 +475,6 @@ void validateInput(){
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 }
-#include <windows.h>
 
 void setColor(int textColor, int bgColor) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
