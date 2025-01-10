@@ -5,6 +5,8 @@
 #include <sstream>
 #include <cstdlib>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 using namespace std;
 
 
@@ -55,7 +57,7 @@ int main(){
             bool back = true;
             
             while(back){
-                cout << "\nUsers menu\n1. Show all books\n2. Search book\n3. Return\nChoose an option: " << endl;
+                cout << "\nUsers menu\n1. Show all books\n2. Search book\n3. Return\n\nChoose an option: ";
                 cin >> optionUsers;
                 cin.ignore();
 
@@ -91,64 +93,65 @@ int main(){
         }
             break;
         case 2:{
-            adminAccess(password);
-            int optionAdmin;
-            bool back = true;
-            
-            while(back){
-                cout << "\nAdmin menu\n1. Show all books\n2. Search book\n3. Add books\n4. Edit information\n5. Delete information\n6. Export books\n7. Return \nChoose an option: " << endl;
-                cin >> optionAdmin;
-                cin.ignore();
-
-                if(cin.fail()){
-                    cout << "Error al leer los datos" << endl;
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                }
-
-                switch (optionAdmin){
-                case 1:
-                    showBooks(books);
-                    break;
-                case 2:
-                    cout << "Enter the criterion to search by (code, title): ";
-                    cin >> criterion;
+            if(adminAccess(password)){
+                int optionAdmin;
+                bool back = true;
+                
+                while(back){
+                    cout << "\nAdmin menu\n1. Show all books\n2. Search book\n3. Add books\n4. Edit information\n5. Delete information\n6. Export books\n7. Return \nChoose an option: " << endl;
+                    cin >> optionAdmin;
                     cin.ignore();
-                    cout << "Enter the value to search for: ";
-                    getline(cin, value);
-                    binarySearch(books, criterion, value);
-                    break;
-                case 3:
-                    addBook(books);
-                    break;
-                case 4:
-                    editBook(books);
-                    break;
-                case 5:
-                    deleteBook(books);
-                    break;
-                case 6:
-                    cout << "Enter the criterion to export by (genre, author): ";
-                    cin >> criterion;
-                    cin.ignore();
-                    cout << "Enter the value to export: ";
-                    getline(cin, value);
-                    exportBooks(books, criterion, value);
-                    break;    
-                case 7:
-                    cout << "Returning..." << endl;
-                    back = false;
-                    system("cls");
-                    break;
-                default:
-                    cout << "Only options from 1 to 3 are accepted" << endl;
-                    break;
+
+                    if(cin.fail()){
+                        cout << "Error al leer los datos" << endl;
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    }
+
+                    switch (optionAdmin){
+                    case 1:
+                        showBooks(books);
+                        break;
+                    case 2:
+                        cout << "Enter the criterion to search by (code, title): ";
+                        cin >> criterion;
+                        cin.ignore();
+                        cout << "Enter the value to search for: ";
+                        getline(cin, value);
+                        binarySearch(books, criterion, value);
+                        break;
+                    case 3:
+                        addBook(books);
+                        break;
+                    case 4:
+                        editBook(books);
+                        break;
+                    case 5:
+                        deleteBook(books);
+                        break;
+                    case 6:
+                        cout << "Enter the criterion to export by (genre, author): ";
+                        cin >> criterion;
+                        cin.ignore();
+                        cout << "Enter the value to export: ";
+                        getline(cin, value);
+                        exportBooks(books, criterion, value);
+                        break;    
+                    case 7:
+                        cout << "Returning..." << endl;
+                        back = false;
+                        system("cls");
+                        break;
+                    default:
+                        cout << "Only options from 1 to 3 are accepted" << endl;
+                        break;
+                    }
                 }
             }
         }
         break;
         case 3:
-            cout << "Goodbye and thank you for reading books :)" << endl;
+            cout << "Goodbye and thanks for reading books :)" << endl;
             break;
         default:
             cout << "Only options from 1 - 3 are accepted" << endl;
@@ -194,14 +197,17 @@ bool adminAccess(string &password){
     cout << "Enter password (or enter 'r' to return): ";
     cin >> password;
 
-    while (password != PASSWORD) { 
-        if (password == "R" || password == "r") { 
-            cout << "R" << endl; 
+    while (password != PASSWORD){ 
+        if (password == "R" || password == "r"){ 
+            cout << "Returning to previous menu" << endl; 
+            this_thread::sleep_for(chrono::seconds(1));
+            system("cls");
             return false;
         } 
         cout << "Incorrect password, please try again (or enter 'r' to cancel): "; 
         cin >> password; 
     }
+    cout << "Access granted" << endl;
     return true;
 }
 
