@@ -50,7 +50,7 @@ int main(){
     do{
         cout << TITLE << endl;
         cout << "\n**************Welcome to your library***************" << endl;
-        cout << "\n1. Login as a user\n2. Login as an admin\n3.themas\n4.exit" << endl;
+        cout << "\n1. Login as a user\n2. Login as an admin\n3. Themas\n4. Exit" << endl;
         cout << "\nChoose your option: ";
         cin >> option;
         cin.ignore();
