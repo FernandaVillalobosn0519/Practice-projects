@@ -9,8 +9,6 @@
 #include <thread>
 #include <iomanip>
 using namespace std;
-
-
 const string PASSWORD = "admin00";
 
 struct Library{
@@ -37,7 +35,7 @@ int main(){
     string filename ="bookslist.csv", password;
     vector<Library> books = csvData(filename);
     string value,criterion;
-    int option;
+    int option, exportOption, optionAdmin, optionUsers, searchOption;
 
     do{
         cout << "\n**************Welcome to your library***************" << endl;
@@ -50,46 +48,33 @@ int main(){
 
         switch (option){
         case 1: {
-            int optionUsers;
             bool back = true;
             
             while(back){
                 cout << "\nUsers menu\n1. Show all books\n2. Search book\n3. Return\n\nChoose an option: ";
                 cin >> optionUsers;
                 cin.ignore();
-
                 validateInput();
-
                 switch (optionUsers){
                 case 1:
-                    showBooks(books);
-                    break;
+                    showBooks(books);break;
                 case 2: {
-                    int searchOption;
                     bool searchBack = true;
 
                     while(searchBack){
                         cout << "\nSearch by:\n1. Code\n2. Title\n3. Return\n\nChoose an option: ";
                         cin >> searchOption;
                         cin.ignore();
-
                         validateInput();
-
                         switch(searchOption){
                             case 1:
-                                criterion = "code";
-                                searchBack = false;
-                                break;
+                                criterion = "code"; searchBack = false; break;
                             case 2:
-                                criterion = "title";
-                                searchBack = false;
-                                break;
+                                criterion = "title"; searchBack = false; break;
                             case 3:
                                 cout << "Returning..." << endl;
                                 searchBack = false;
-                                criterion = "";
-                                system("cls");
-                                break;
+                                criterion = ""; system("cls"); break;
                             default:
                                 cout << "Only options from 1 to 3 are accepted" << endl;
                                 break;
@@ -116,20 +101,16 @@ int main(){
             break;
         case 2:{
             if(adminAccess(password)){
-                int optionAdmin;
                 bool back = true;
                 
                 while(back){
                     cout << "\nAdmin menu\n1. Show all books\n2. Search book\n3. Add books\n4. Edit information\n5. Delete information\n6. Export books\n7. Return \nChoose an option: " << endl;
                     cin >> optionAdmin;
                     cin.ignore();
-
                     validateInput();
-
                     switch (optionAdmin){
                     case 1:
-                        showBooks(books);
-                        break;
+                        showBooks(books); break;
                     case 2:
                         cout << "Enter the criterion to search by (code, title): ";
                         cin >> criterion;
@@ -139,45 +120,35 @@ int main(){
                         binarySearch(books, criterion, value);
                         break;
                     case 3:
-                        addBook(books);
-                        break;
+                        addBook(books); break;
                     case 4:
-                        editBook(books);
-                        break;
+                        editBook(books); break;
                     case 5:
-                        deleteBook(books);
-                        break;
+                        deleteBook(books); break;
                     case 6: {
-                        int exportOption;
                         bool exportBack = true;
 
                         while(exportBack){
                             cout << "\nExport by:\n1. Genre\n2. Author\n3. All Books\n4. Return\n\nChoose an option: ";
                             cin >> exportOption;
                             cin.ignore();
-
                             validateInput();
-
                             switch(exportOption){
                                 case 1:
                                     criterion = "genre";
-                                    exportBack = false;
-                                    break;
+                                    exportBack = false; break;
                                 case 2:
                                     criterion = "author";
-                                    exportBack = false;
-                                    break;
+                                    exportBack = false; break;
                                 case 3:
                                     criterion = "all";
                                     exportBack = false;
-                                    value = "all"; //Por modificar (Pedro)
-                                    break;
+                                    value = " "; break;
                                 case 4:
                                     cout << "Returning to previous menu..." << endl;
                                     exportBack = false;
                                     criterion = "";
-                                    system("cls");
-                                    break;
+                                    system("cls"); break;
                                 default:
                                     cout << "Only options from 1 to 4 are accepted" << endl;
                                     break;
@@ -331,13 +302,10 @@ void editBook(vector<Library> &books){
             break;
         }
     }
-
     if(!found){
         cout<<"Book with code "<<code<<" not found"<<endl;
     }
 }
-
-
 
 void deleteBook(vector<Library> &books) {
     string code;
@@ -412,7 +380,10 @@ void binarySearch(vector<Library>& books, const string& criterion, const string&
 }
 
 void exportBooks(vector<Library>& books, const string& criterion, const string& value) {
+    if (criterion != "all") {
     sortBooks(books, criterion);
+}
+
 
     static int fileCount = 1;
     stringstream filename;
@@ -428,6 +399,13 @@ void exportBooks(vector<Library>& books, const string& criterion, const string& 
     file << "Code,Title,Author,Genre,PublicationYear\n";
     bool found = false;
 
+   if (criterion == "all") {
+    for (const auto& book : books) {
+        file << book.code << "," << book.title << "," << book.author << ","
+             << book.genre << "," << book.publicationYear << "\n";
+        found = true;
+    }
+} else {
     auto it = lower_bound(books.begin(), books.end(), value, [criterion](const Library& book, const string& value) {
         if (criterion == "genre") return book.genre < value;
         if (criterion == "author") return book.author < value;
@@ -441,6 +419,8 @@ void exportBooks(vector<Library>& books, const string& criterion, const string& 
         found = true;
         ++it;
     }
+}
+
 
     file.close();
 
