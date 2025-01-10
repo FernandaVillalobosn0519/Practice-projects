@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
+#include <iomanip>
 using namespace std;
 
 
@@ -30,7 +31,7 @@ void deleteBook(vector<Library> &books);
 void exportBooks(vector<Library>& books, const string& criterion, const string& value);
 void binarySearch(vector<Library>& books, const string& criterion, const string& value);
 void sortBooks(vector<Library>& books, const string& criterion);
-
+void validateInput();
 
 int main(){
     string filename ="bookslist.csv", password;
@@ -45,11 +46,7 @@ int main(){
         cin >> option;
         cin.ignore();
 
-        if(cin.fail()){
-            cout << "Fail, try an accepted option" << endl;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
+        validateInput();
 
         switch (option){
         case 1: {
@@ -61,25 +58,50 @@ int main(){
                 cin >> optionUsers;
                 cin.ignore();
 
-                if(cin.fail()){
-                    cout << "Fail, try an accepted option" << endl;
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                }
+                validateInput();
 
                 switch (optionUsers){
                 case 1:
                     showBooks(books);
                     break;
-                case 2:
-                    cout << "Enter the criterion to search by (code, title): ";
-                    cin >> criterion;
-                    cin.ignore();
-                    cout << "Enter the value to search for: ";
-                    getline(cin, value);
-                    binarySearch(books, criterion, value);
+                case 2: {
+                    int searchOption;
+                    bool searchBack = true;
 
-                    break;    
+                    while(searchBack){
+                        cout << "\nSearch by:\n1. Code\n2. Title\n3. Return\n\nChoose an option: ";
+                        cin >> searchOption;
+                        cin.ignore();
+
+                        validateInput();
+
+                        switch(searchOption){
+                            case 1:
+                                criterion = "code";
+                                searchBack = false;
+                                break;
+                            case 2:
+                                criterion = "title";
+                                searchBack = false;
+                                break;
+                            case 3:
+                                cout << "Returning..." << endl;
+                                searchBack = false;
+                                criterion = "";
+                                system("cls");
+                                break;
+                            default:
+                                cout << "Only options from 1 to 3 are accepted" << endl;
+                                break;
+                        }
+                    }
+                    if (!criterion.empty()){
+                        cout << "Enter the value to search for: ";
+                        getline(cin, value);
+                        binarySearch(books, criterion, value);
+                    }
+                    break;
+                }
                 case 3:
                     cout << "Returning..." << endl;
                     back = false;
@@ -102,11 +124,7 @@ int main(){
                     cin >> optionAdmin;
                     cin.ignore();
 
-                    if(cin.fail()){
-                        cout << "Error al leer los datos" << endl;
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    }
+                    validateInput();
 
                     switch (optionAdmin){
                     case 1:
@@ -129,14 +147,51 @@ int main(){
                     case 5:
                         deleteBook(books);
                         break;
-                    case 6:
-                        cout << "Enter the criterion to export by (genre, author): ";
-                        cin >> criterion;
-                        cin.ignore();
-                        cout << "Enter the value to export: ";
-                        getline(cin, value);
-                        exportBooks(books, criterion, value);
-                        break;    
+                    case 6: {
+                        int exportOption;
+                        bool exportBack = true;
+
+                        while(exportBack){
+                            cout << "\nExport by:\n1. Genre\n2. Author\n3. All Books\n4. Return\n\nChoose an option: ";
+                            cin >> exportOption;
+                            cin.ignore();
+
+                            validateInput();
+
+                            switch(exportOption){
+                                case 1:
+                                    criterion = "genre";
+                                    exportBack = false;
+                                    break;
+                                case 2:
+                                    criterion = "author";
+                                    exportBack = false;
+                                    break;
+                                case 3:
+                                    criterion = "all";
+                                    exportBack = false;
+                                    value = "all"; //Por modificar (Pedro)
+                                    break;
+                                case 4:
+                                    cout << "Returning to previous menu..." << endl;
+                                    exportBack = false;
+                                    criterion = "";
+                                    system("cls");
+                                    break;
+                                default:
+                                    cout << "Only options from 1 to 4 are accepted" << endl;
+                                    break;
+                            }
+                        }
+                        if(!criterion.empty() && criterion != "all"){
+                            cout << "Enter the value to export: ";
+                            getline(cin, value);
+                        }
+                        if(!criterion.empty()){
+                            exportBooks(books, criterion, value);
+                        }
+                        break;
+                    }
                     case 7:
                         cout << "Returning..." << endl;
                         back = false;
@@ -186,10 +241,14 @@ vector<Library> csvData(const string &bookslist){
 }
 
 void showBooks(const vector<Library> &books){
-    for(const auto &book : books){
-        cout << "\n--------------------------------------------------------------------------------------" 
-             << "\nCode's book: " << book.code << "\nTitle: " << book.title 
-             << "\n--------------------------------------------------------------------------------------" << endl; 
+    cout << left;
+    cout << "\n" << setw(10) << "Code" << setw(85) << "Title" << endl;
+    cout << string(95, '-') << endl; // Línea de separación
+
+    for (const auto &book : books) {
+        cout << setw(10) << book.code
+             << setw(85) << book.title
+             << endl;
     }
 }
 
@@ -389,5 +448,13 @@ void exportBooks(vector<Library>& books, const string& criterion, const string& 
         cout << "Books exported successfully to " << filename.str() << "!\n";
     } else {
         cout << "No books found with " << criterion << " " << value << ".\n";
+    }
+}
+
+void validateInput(){
+    if(cin.fail()){
+        cout << "Fail, try an accepted option" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 }
